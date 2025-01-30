@@ -4,10 +4,12 @@
 \alias{le_ideb}
 \title{Processa arquivo XLSX de resultados do IDEB com colunas hierárquicas}
 \usage{
-le_ideb(caminho_arquivo)
+le_ideb(regiao = "municipios", nivel = "iniciais")
 }
 \arguments{
-\item{caminho_arquivo}{Caminho para o arquivo .xlsx}
+\item{regiao}{character , one of municipios, ufs, brasil}
+
+\item{nivel}{character, one of iniciais,finais,medio}
 }
 \value{
 Tibble com dados formatados
