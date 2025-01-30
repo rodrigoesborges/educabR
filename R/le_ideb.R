@@ -1,10 +1,28 @@
 #' Processa arquivo XLSX de resultados do IDEB com colunas hierárquicas
 #'
-#' @param caminho_arquivo Caminho para o arquivo .xlsx
+#' @param regiao character , one of municipios, ufs, brasil
+#' @param nivel character, one of iniciais,finais,medio
 #' @return Tibble com dados formatados
 #' @export
-le_ideb <- function(caminho_arquivo) {
+le_ideb <- function(regiao="municipios",nivel="iniciais") {
 
+  metaideb <- metainep|>dplyr::filter(grepl("Ideb",assunto,fixed = F))
+
+  caminho_fonte <- (metaideb|>
+    dplyr::filter(grepl(regiao,tab_url),grepl(nivel,tab_url)))$tab_url
+
+  f <- tempfile()
+
+  download.file(caminho_fonte,f,method="curl")
+
+  availf <- unzip(f,list=T)
+
+  unzip(f,files = availf[grepl("xlsx",availf$Name),]$Name,junkpaths = T,
+        exdir = dirname(f))
+
+  caminho_arquivo <-
+    paste0(dirname(f),"/",
+           basename(availf[grepl("xlsx",availf$Name),]$Name[1]))
   # Verificar dependências
   if (!requireNamespace("readxl", quietly = TRUE)) {
     stop("Por favor instale o pacote readxl: install.packages('readxl')")
