@@ -77,6 +77,8 @@ le_ideb <- function(regiao="municipios",nivel="iniciais") {
       # Remover _ao_ o_\\d
       gsub(pattern = "o_(\\do)", replacement = "o-\\1")|>
       # Remover _ (.)_
+      # Remover a_\\d
+      gsub(pattern = "a_(\\do)", replacement = "a-\\1")|>
       gsub(pattern = "_\\(.\\)_", replacement = "_")|>
       # Remover _ (.)_
       gsub(pattern = "r_r", replacement = "r-r")|>
@@ -121,12 +123,19 @@ le_ideb <- function(regiao="municipios",nivel="iniciais") {
         detalhe == "3o" ~ "3ª Série",
         detalhe == "4o" ~ "4ª Série",
         detalhe == "5o" ~ "5ª Série",
+        detalhe == "6o-a-9o-ano" ~ "6ª à 9ª Série",
+        detalhe == "6o" ~ "6ª Série",
+        detalhe == "7o" ~ "7ª Série",
+        detalhe == "8o" ~ "8ª Série",
+        detalhe == "9o" ~ "9ª Série",
         detalhe == "matematica" ~ "Matemática",
         detalhe == "lingua-portuguesa" ~ "Língua Portuguesa",
         TRUE ~ detalhe
       )
     ) |>
-    dplyr::select(codigo_municipio, nome_municipio, ano, indicador, detalhe, valor)
+    dplyr::select(codigo_municipio, nome_municipio,
+                  rede,ano, indicador, detalhe, valor)|>
+    dplyr::filter(!is.na(codigo_municipio))
 
 return(dados_long)
 }
