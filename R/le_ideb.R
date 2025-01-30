@@ -110,10 +110,11 @@ le_ideb <- function(regiao="municipios",nivel="iniciais") {
       valor = as.numeric(valor),
       indicador = dplyr::case_when(
         indicador == "vl-aprovacao" ~ "Taxa de Aprovação",
-        grepl("indicador-rendimento",indicador) ~ "Indicador de Rendimento",
+        grepl("indicador-rend",indicador) ~ "Indicador de Rendimento",
         indicador == "vl-nota-media" ~ "Nota SAEB",
+        grepl("nota",indicador) ~ "Nota SAEB",
         indicador == "vl-observado" ~ "IDEB",
-        indicador == "vl-projecao" ~ "Meta para o IDEB",
+        indicador == "vl-projecao" ~ "IDEB",
         TRUE ~ indicador
       ),
       detalhe = dplyr::case_when(
@@ -130,6 +131,11 @@ le_ideb <- function(regiao="municipios",nivel="iniciais") {
         detalhe == "9o" ~ "9ª Série",
         detalhe == "matematica" ~ "Matemática",
         detalhe == "lingua-portuguesa" ~ "Língua Portuguesa",
+        grepl("media",detalhe) ~ "Nota Média Padronidaza",
+        grepl("meta",detalhe) ~ "Meta para o IDEB",
+        grepl("ideb",detalhe) ~ "IDEB",
+        grepl("rend",detalhe) ~ "Taxa de aprovação Média (Indicador de Rendimento)",
+
         TRUE ~ detalhe
       )
     ) |>
