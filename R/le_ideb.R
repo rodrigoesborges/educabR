@@ -2,9 +2,10 @@
 #'
 #' @param regiao character , one of municipios, ufs, brasil
 #' @param nivel character, one of iniciais,finais,medio
+#' @param replica boolean, replicate value from year before on years if no index available
 #' @return Tibble com dados formatados
 #' @export
-le_ideb <- function(regiao="municipios",nivel="iniciais") {
+le_ideb <- function(regiao="municipios",nivel="iniciais",replica=F) {
 
   idebmeta <- educabR::metainep|>dplyr::filter(grepl("Ideb",assunto,fixed = F))
 
@@ -164,5 +165,10 @@ le_ideb <- function(regiao="municipios",nivel="iniciais") {
                   rede,ano, indicador, detalhe, valor)|>
     dplyr::filter(!is.na(codigo_municipio))
 
+  if(replica){
+    dados_long <- dados_long|>
+      dplyr::bind_rows(dados_long|>dplyr::mutate(ano=ano+1))|>
+      dplyr::arrange(codigo_municipio,ano)
+  }
 return(dados_long)
 }

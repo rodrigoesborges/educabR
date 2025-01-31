@@ -4,12 +4,14 @@
 \alias{le_ideb}
 \title{Processa arquivo XLSX de resultados do IDEB com colunas hierárquicas}
 \usage{
-le_ideb(regiao = "municipios", nivel = "iniciais")
+le_ideb(regiao = "municipios", nivel = "iniciais", replica = F)
 }
 \arguments{
 \item{regiao}{character , one of municipios, ufs, brasil}
 
 \item{nivel}{character, one of iniciais,finais,medio}
+
+\item{replica}{boolean, replicate value from year before on years if no index available}
 }
 \value{
 Tibble com dados formatados
