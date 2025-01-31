@@ -161,8 +161,8 @@ le_ideb <- function(regiao="municipios",nivel="iniciais",replica=F) {
         TRUE ~ detalhe
       )
     ) |>
-    dplyr::select(codigo_municipio, nome_municipio,
-                  rede,ano, indicador, detalhe, valor)|>
+    dplyr::select("codigo_municipio", "nome_municipio",
+                  "rede","ano", "indicador", "detalhe", "valor")|>
     dplyr::filter(!is.na(codigo_municipio))
 
   if(replica){
