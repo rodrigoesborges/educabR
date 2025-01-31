@@ -126,7 +126,7 @@ le_ideb <- function(regiao="municipios",nivel="iniciais",replica=F) {
       values_to = "valor"
     ) |>
     dplyr::mutate(
-      codigo_municipio = stringr::str_pad(co_municipio, 7, "left", "0"),  # Garantir código de 7 dígitos
+      codigo_municipio = as.numeric(co_municipio),
       nome_municipio = no_municipio,
       ano = as.integer(ano),
       valor = as.numeric(valor),
