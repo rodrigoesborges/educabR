@@ -6,9 +6,9 @@
 #' @export
 le_ideb <- function(regiao="municipios",nivel="iniciais") {
 
-  metaideb <- educabR::metainep|>dplyr::filter(grepl("Ideb",assunto,fixed = F))
+  idebmeta <- educabR::metainep|>dplyr::filter(grepl("Ideb",assunto,fixed = F))
 
-  caminho_fonte <- (educabR::metaideb|>
+  caminho_fonte <- (idebmeta|>
     dplyr::filter(grepl(regiao,tab_url),grepl(nivel,tab_url)))$tab_url
 
   f <- tempfile()
