@@ -1,7 +1,7 @@
 ## code to prepare `metainep` dataset goes here
 
 ##inep metadados
-
+options(chromote.headless = "new")
 
 metabaseurl <- "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/"
 
@@ -122,12 +122,19 @@ scrapeass <- \(assunto) {
                           rvest::html_elements(xpath='//a[contains(@href,"xls")]')|>
                           rvest::html_text())
 
+    tabelaurlpdf <- pinfo|>
+      rvest::html_elements(xpath='//a[contains(@href,".pdf")]')|>
+      rvest::html_attr("href")
+
+    tabelalabelpdf <- (pinfo|>
+                         rvest::html_elements(xpath='//a[contains(@href,"pdf")]')|>
+                         rvest::html_text())
 
     data.frame(
       assunto_id=assunto,
-      periodo=gsub(".*(\\d{4})[^\\d].*","\\1",c(tabelaurlzip,tabelaurlxls)),
-      taburl=c(tabelaurlzip,tabelaurlxls),
-      tabela=c(tabelalabelszip,tabelalabelxls)
+      periodo=gsub(".*(\\d{4})[^\\d].*","\\1",c(tabelaurlzip,tabelaurlxls,tabelaurlpdf)),
+      taburl=c(tabelaurlzip,tabelaurlxls,tabelaurlpdf),
+      tabela=c(tabelalabelszip,tabelalabelxls,tabelaurlpdf)
     )
 
 }

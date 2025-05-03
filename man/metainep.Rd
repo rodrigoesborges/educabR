@@ -6,7 +6,7 @@
 \title{metainep - basic metadata table - name , url, group/subject
   with auto-generated id - obtaining by scraping inep site at 2025-01}
 \format{
-An object of class \code{data.frame} with 636 rows and 10 columns.
+An object of class \code{data.frame} with 651 rows and 10 columns.
 }
 \source{
 \url{https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/}

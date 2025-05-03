@@ -5,7 +5,7 @@
 #' @param replica boolean, replicate value from year before on years if no index available
 #' @return Tibble com dados formatados
 #' @export
-le_ideb <- function(regiao="municipios",nivel="iniciais",replica=F) {
+le_ideb <- \(regiao="municipios",nivel="iniciais",replica=F) {
 
   idebmeta <- educabR::metainep|>dplyr::filter(grepl("Ideb",assunto,fixed = F))
 
@@ -153,6 +153,11 @@ le_ideb <- function(regiao="municipios",nivel="iniciais",replica=F) {
         detalhe == "9o" ~ "9ª Série",
         detalhe == "matematica" ~ "Matemática",
         detalhe == "lingua-portuguesa" ~ "Língua Portuguesa",
+        detalhe == "1a" ~ "1ª Série do Ensino Médio",
+        detalhe == "2a" ~ "2ª Série do Ensino Médio",
+        detalhe == "3a" ~ "3ª Série do Ensino Médio",
+        detalhe == "4a" ~ "4ª Série do Ensino Médio",
+        detalhe == "total" ~ "Ensino Médio (Total)",
         grepl("media",detalhe) ~ "Nota Média Padronidaza",
         grepl("meta",detalhe) ~ "Meta para o IDEB",
         grepl("ideb",detalhe) ~ "IDEB",
