@@ -13,7 +13,7 @@ le_afd <- \(ano=2024,regiao="municipios",localizacoes='total',dependencias='tota
   afdmeta <- educabR::metainep|>dplyr::filter(grepl("Adequação",assunto,fixed = F))
 
   caminho_fonte <- (afdmeta|>
-                      dplyr::filter(grepl(regiao,tolower(tab_url)),,grepl(ano,tab_url)))$tab_url
+                      dplyr::filter(grepl(regiao,tolower(tab_url)),grepl(ano,tab_url)))$tab_url
 
   f <- tempfile(fileext = ".zip")
 
