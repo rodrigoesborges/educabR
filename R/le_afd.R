@@ -6,39 +6,53 @@
 #' @param dependencia character, one of "total","publica","privada","estadual","municipal"
 #' @param nivel character, one of infantil,ensino_fundamental,ensino_medio,eja_fundamental,eja_medio
 #' @param subnivel character, one of total,anos_iniciais,anos_finais
+#' @param cache_dir character, optional directory to cache downloads
+#'   (avoids re-downloading from INEP CDN which rate-limits sequential calls)
 #' @return Tibble com dados formatados
 #' @export
-le_afd <- \(ano=2024,regiao="municipios",localizacoes='total',dependencias='total',niveis="ensino_medio",subniveis='total') {
+le_afd <- \(ano=2024,regiao="municipios",localizacoes='total',dependencias='total',niveis="ensino_medio",subniveis='total',cache_dir=NULL) {
 
   afdmeta <- educabR::metainep|>dplyr::filter(grepl("Adequação",assunto,fixed = F))
 
   caminho_fonte <- (afdmeta|>
                       dplyr::filter(grepl(regiao,tolower(tab_url)),grepl(ano,tab_url)))$tab_url
 
-  f <- tempfile(fileext = ".zip")
-
-
-  retry <- \(expr, isError=function(x) "try-error" %in% class(x), maxErrors=5, sleep=0) {
+  retry <- \(expr, maxErrors=5, sleep=1) {
     attempts = 0
     retval = try(eval(expr))
-    while (isError(retval)) {
+    while ("try-error" %in% class(retval)) {
       attempts = attempts + 1
-      if (attempts >= maxErrors) {
-        msg = sprintf("retry: too many retries [[%s]]", capture.output(str(retval)))
-        stop(msg)
-      } else {
-        msg = sprintf("retry: error in attempt %i/%i [[%s]]", attempts,  maxErrors,
-                      capture.output(str(retval)))
-        #warning(msg)
-
-      }
+      if (attempts >= maxErrors) stop("retry: too many retries")
       if (sleep > 0) Sys.sleep(sleep)
       retval = try(eval(expr))
     }
     return(retval)
   }
 
-  retry(download.file(caminho_fonte,f,method="curl",quiet=TRUE),maxErrors = 5,sleep = 1)
+  if (!is.null(cache_dir)) {
+    f <- file.path(cache_dir, sprintf("AFD_%s_%s.zip", ano, regiao))
+    if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive=TRUE, showWarnings=FALSE)
+    if (!file.exists(f) || file.size(f) < 10000) {
+      retry({
+        h <- curl::new_handle(
+          ssl_verifypeer = 0, ssl_verifyhost = 0,
+          http_version = 1, followlocation = 1,
+          useragent = "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
+        )
+        curl::curl_download(caminho_fonte, f, handle = h)
+      }, maxErrors = 5, sleep = 2)
+    }
+  } else {
+    f <- tempfile(fileext = ".zip")
+    retry({
+      h <- curl::new_handle(
+        ssl_verifypeer = 0, ssl_verifyhost = 0,
+        http_version = 1, followlocation = 1,
+        useragent = "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
+      )
+      curl::curl_download(caminho_fonte, f, handle = h)
+    }, maxErrors = 5, sleep = 1)
+  }
 
   availf <- unzip(f,list=T)
 
